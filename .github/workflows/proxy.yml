@@ -1,0 +1,28 @@
+name: proxy CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12]
+        express-port: [3000]
+
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v1
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - run: npm install
+    - run: npm run lint
+    - name: npm test
+      run: |
+        export PORT=${{ matrix.express-port }}
+        npm test
+      env:
+        CI: true
